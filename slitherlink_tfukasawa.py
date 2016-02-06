@@ -14,7 +14,7 @@ def link(s,t):
     else:
         c=col[s][t-1]+row[s-1][t]
     
-    if c==0 or c==2 or c==4:
+    if c==0 or c==2:
         return True
     else:
         return False
