@@ -7,6 +7,66 @@ row=[[0 for i in range(N+1)] for j in range(M)]
 judge_col = {}
 judge_row = {}
 
+
+numbers = {}    #DICTIONARY
+
+for n in range(4):  #DEFINE NUMBERS 0~3
+
+    while True:     
+        print('Please enter the x-coordinate of a figure "',n,'". Or enter "q" to go next step.')
+    
+        i = input("")
+    
+        if i == "q":
+            break
+    
+        elif 0 <= int(i) <= M:
+        
+            x = int(i)
+        
+            print('Please enter the y-coordinate of the figure.')
+        
+            i = int(input())
+        
+            if 0 <= i <=  N:
+
+                y = i
+
+                numbers[(x,y)] = n
+
+                print('(',x,',',y,') = ',n)
+
+            else:
+                print('You entered a wrong number.It must be 0 to ',N,'.')
+
+        else:
+            print('You entered a wrong number.It must be 0 to ',M,'.')
+
+#DEFINITION END
+
+keys = list(numbers.keys())
+
+values = list(numbers.values())
+
+def judge_zero(tuple):
+    s = tuple[0]
+    t = tuple[1]
+    judge_col[(s,t)] = False
+    judge_col[(s,t+1)] = False
+    judge_row[(s,t)] = False
+    judge_row[(s+1,t)] = False
+
+for i in range(len(values)):
+    if values[i] == 0:
+        judge_zero(keys[i])
+
+    elif values[i] == max(values):
+        P = keys[i]
+
+print(P)
+
+
+
 for i in range(5):
     for j in range(5):
         judge_col[(i,j)] = True
