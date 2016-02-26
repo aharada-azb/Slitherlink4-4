@@ -77,6 +77,8 @@ def line_up(s,t):
         return False
     if (judge_row[(s,t)] == True) and (row[s][t] == 0):
         row[s][t] = 1
+        judge_col[(s,t)] = False
+        judge_col[(s,t-1)] = False
         return True
     else:
         return False
@@ -86,44 +88,58 @@ def line_right(s,t):
         return False
     if (judge_col[(s,t)] == True) and (col[s][t] == 0):
         col[s][t] = 1
+        judge_row[(s,t)] = False
+        judge_row[(s-1,t)] = False
         return True
     else:
         return False
 
 def line_down(s,t):
-    if 1>s or s>N or t>M:
+    if s<1 or t<0 or s>N or t>M:
         return False
     if (judge_row[(s-1,t)] == True) and (row[s-1][t] == 0):
         row[s-1][t] = 1
+        judge_col[(s,t)] = False
+        if t>0:
+            judge_col[(s,t-1)] = False
         return True
     else:
         return False
 
 def line_left(s,t):
-    if s>N or t>M:
+    if t<1 or s<0 or s>N or t>M:
         return False
     if (judge_col[(s,t-1)] == True) and (col[s][t-1] == 0):
         col[s][t-1] = 1
+        judge_row[(s,t)] = False
+        if s>0:
+            judge_row[(s-1,t)] = False
         return True
     else:
         return False
 
+
 #どこの点にもすすめなくなった時に１つ前の点の座標を返す関数
-def line_pre_false(s,t):
-    if col[s][t] == 1:
-        judge_col[(s,t)] = False
-        return (s,t+1)
-    elif col[s][t-1] == 1:
-        judge_col[(s,t-1)] = False
-        return (s,t-1)
-    elif row[s][t] == 1:
-        judge_row[(s,t)] = False
-        return (s+1,t)
-    elif row[s-1][t] ==1:
-        judge_row[(s-1,t)] = False
-        return (s-1,t)
+def line_pre_false(x,y):
+    if row[x][y] == 1:
+        judge_row[(x,y)] = False
+        row[x][y] = 0
+        return (x+1,y)
+    elif col[x][y] == 1:
+        judge_col[(x,y)] = False
+        col[x][y] = 0
+        return (x,y+1)
+    elif row[x-1][y] == 1:
+        judge_row[(x-1,y)] = False
+        row[x-1][y] = 0
+        return (x-1,y)
+    elif col[x][y-1] == 1:
+        judge_col[(x,y-1)] = False
+        col[x][y-1]
+        return (x,y-1)
     else:
         print("error")
+
     
 #ある点について線を上、右、下、左の順に引けるか試していく関数
 def line_main(x,y):
@@ -149,6 +165,7 @@ def line_main(x,y):
     
 #再帰定義によって次々に線を引いていく関数
 def line_all(x,y):
+    global tmp
     tmp = line_main(x,y)
     if allink(N,M):
             return
@@ -170,21 +187,25 @@ def link(s,t):
         c=col[s][t-1]+row[s][t]+row[s-1][t]
     else:
         c=col[s][t-1]+row[s-1][t]
-    
+
     if c==0 or c==2:
         return True
     else:
         return False
-        
+
+
 def allink(s,t):
     for i in range(s):
         for j in range(t):
             if link(i,j)==False:
                 return False
+
+
 #
 print(col,row)
 print()
 line_all(0,0)
+
 
 def solved(a):
     if a==None:
