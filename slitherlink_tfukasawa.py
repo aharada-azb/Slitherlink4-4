@@ -131,8 +131,6 @@ def line_pre_false(x,y):
         if judge_col[(x+1,y-1)] >0:
             judge_col[(x+1,y-1)] -= 1
         row[x][y] = 0
-        print(col,row)
-        print()
         return (x+1,y)
     elif col[x][y] == 1:
         judge_col[(x,y)] += 1
@@ -141,8 +139,6 @@ def line_pre_false(x,y):
         if judge_row[(x-1,y+1)] >0:
             judge_row[(x-1,y+1)] -= 1
         col[x][y] = 0
-        print(col,row)
-        print()
         return (x,y+1)
     elif row[x-1][y] == 1:
         judge_row[(x-1,y)] += 1
@@ -151,8 +147,6 @@ def line_pre_false(x,y):
         if judge_col[(x-1,y-1)] >0:
             judge_col[(x-1,y-1)] -= 1
         row[x-1][y] = 0
-        print(col,row)
-        print()
         return (x-1,y)
     elif col[x][y-1] == 1:
         judge_col[(x,y-1)] += 1
@@ -161,30 +155,18 @@ def line_pre_false(x,y):
         if judge_row[(x-1,y-1)] >0:
             judge_row[(x-1,y-1)] -= 1
         col[x][y-1]
-        print(col,row)
-        print()
         return (x,y-1)
-    else:
-        print("error")
 
     
 #ある点について線を上、右、下、左の順に引けるか試していく関数
 def line_main(x,y):
     if line_up(x,y):
-        print(col,row)
-        print()
         return (x+1,y)
     if line_right(x,y):
-        print(col,row)
-        print()
         return (x,y+1)
     if line_down(x,y):
-        print(col,row)
-        print()
         return (x-1,y)
     if line_left(x,y):
-        print(col,row)
-        print()
         return (x,y-1)
     else:
         return False
