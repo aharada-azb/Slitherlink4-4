@@ -1,4 +1,4 @@
-#スリザーリンク4*4のmaster
+#slitherlinkのmaster
 N=4
 M=4
 col=[[0 for i in range(N)] for j in range(M+1)]
@@ -8,32 +8,37 @@ judge_col = {}
 judge_row = {}
 
 #引けないところの線の座標を辞書に加える
-for i in range(5):
-    for j in range(5):
-        judge_col[(i,j)] = True
-        judge_row[(i,j)] = True
+for i in range(-1,N+2):
+    for j in range(-1,M+2):
+        judge_col[(i,j)] = 0
+        judge_row[(i,j)] = 0
 
-numbers = {}    #DICTIONARY
+numbers = {}    #中の数字の辞書を定義
 
-for n in range(4):  #DEFINE NUMBERS 0~3
+for s in range(M):
+    for t in range(N):
+        numbers[(s,t)] = True
+
+#0~3の数字の座標を入力させる
+for n in range(4):
 
     while True:     
-        print('Please enter the x-coordinate of a figure "',n,'". Or enter "q" to go next step.')
+        print(n,'のX座標を入力して下さい。無い場合はQキーを入力して下さい。')
     
         i = input("")
     
         if i == "q":
             break
     
-        elif 0 <= int(i) <= M:
+        elif 0 <= int(i) <= M-1:
         
             x = int(i)
         
-            print('Please enter the y-coordinate of the figure.')
+            print('Y座標を入力して下さい。')
         
             i = int(input())
         
-            if 0 <= i <=  N:
+            if 0 <= i <=  N-1:
 
                 y = i
 
@@ -42,43 +47,41 @@ for n in range(4):  #DEFINE NUMBERS 0~3
                 print('(',x,',',y,') = ',n)
 
             else:
-                print('You entered a wrong number.It must be 0 to ',N,'.')
+                print('数値が正しくありません。')
 
         else:
-            print('You entered a wrong number.It must be 0 to ',M,'.')
+            print('数値が正しくありません。')
 
-#DEFINITION END
+keys = list(numbers.keys())     #座標のリスト
 
-keys = list(numbers.keys())
+values = list(numbers.values())     #数字のリスト
 
-values = list(numbers.values())
-
+#0の周りをFalseにする関数
 def judge_zero(tuple):
+
     s = tuple[0]
     t = tuple[1]
+
     judge_col[(s,t)] = False
     judge_col[(s,t+1)] = False
     judge_row[(s,t)] = False
     judge_row[(s+1,t)] = False
 
+#すべての0について判定し辺にFalseを代入
 for i in range(len(values)):
+
     if values[i] == 0:
         judge_zero(keys[i])
-
-    elif values[i] == max(values):
-        P = keys[i]
-
-print(P)
 
 
 #線を上下左右に引く関数を生成
 def line_up(s,t):
     if s>N-1 or t>M:
         return False
-    if (judge_row[(s,t)] == True) and (row[s][t] == 0):
+    if (judge_row[(s,t)] == 0) and (row[s][t] == 0):
         row[s][t] = 1
-        judge_col[(s,t)] = False
-        judge_col[(s,t-1)] = False
+        judge_col[(s,t)] += 1
+        judge_col[(s,t-1)] +=1
         return True
     else:
         return False
@@ -86,10 +89,10 @@ def line_up(s,t):
 def line_right(s,t):
     if s>N or t>M-1:
         return False
-    if (judge_col[(s,t)] == True) and (col[s][t] == 0):
+    if (judge_col[(s,t)] == 0) and (col[s][t] == 0):
         col[s][t] = 1
-        judge_row[(s,t)] = False
-        judge_row[(s-1,t)] = False
+        judge_row[(s,t)] += 1
+        judge_row[(s-1,t)] +=1
         return True
     else:
         return False
@@ -97,11 +100,11 @@ def line_right(s,t):
 def line_down(s,t):
     if s<1 or t<0 or s>N or t>M:
         return False
-    if (judge_row[(s-1,t)] == True) and (row[s-1][t] == 0):
+    if (judge_row[(s-1,t)] == 0) and (row[s-1][t] == 0):
         row[s-1][t] = 1
-        judge_col[(s,t)] = False
+        judge_col[(s,t)] +=1
         if t>0:
-            judge_col[(s,t-1)] = False
+            judge_col[(s,t-1)] +=1
         return True
     else:
         return False
@@ -109,11 +112,11 @@ def line_down(s,t):
 def line_left(s,t):
     if t<1 or s<0 or s>N or t>M:
         return False
-    if (judge_col[(s,t-1)] == True) and (col[s][t-1] == 0):
+    if (judge_col[(s,t-1)] == 0) and (col[s][t-1] == 0):
         col[s][t-1] = 1
-        judge_row[(s,t)] = False
+        judge_row[(s,t)] += 1
         if s>0:
-            judge_row[(s-1,t)] = False
+            judge_row[(s-1,t)] +=1
         return True
     else:
         return False
@@ -122,20 +125,44 @@ def line_left(s,t):
 #どこの点にもすすめなくなった時に１つ前の点の座標を返す関数
 def line_pre_false(x,y):
     if row[x][y] == 1:
-        judge_row[(x,y)] = False
+        judge_row[(x,y)] += 1
+        if judge_col[(x+1,y)] >0:
+            judge_col[(x+1,y)] -= 1
+        if judge_col[(x+1,y-1)] >0:
+            judge_col[(x+1,y-1)] -= 1
         row[x][y] = 0
+        print(col,row)
+        print()
         return (x+1,y)
     elif col[x][y] == 1:
-        judge_col[(x,y)] = False
+        judge_col[(x,y)] += 1
+        if judge_row[(x,y+1)] >0:
+            judge_row[(x,y+1)] -= 1
+        if judge_row[(x-1,y+1)] >0:
+            judge_row[(x-1,y+1)] -= 1
         col[x][y] = 0
+        print(col,row)
+        print()
         return (x,y+1)
     elif row[x-1][y] == 1:
-        judge_row[(x-1,y)] = False
+        judge_row[(x-1,y)] += 1
+        if judge_col[(x-1,y)] >0:
+            judge_col[(x-1,y)] -= 1
+        if judge_col[(x-1,y-1)] >0:
+            judge_col[(x-1,y-1)] -= 1
         row[x-1][y] = 0
+        print(col,row)
+        print()
         return (x-1,y)
     elif col[x][y-1] == 1:
-        judge_col[(x,y-1)] = False
+        judge_col[(x,y-1)] += 1
+        if judge_row[(x,y-1)] >0:
+            judge_row[(x,y-1)] -= 1
+        if judge_row[(x-1,y-1)] >0:
+            judge_row[(x-1,y-1)] -= 1
         col[x][y-1]
+        print(col,row)
+        print()
         return (x,y-1)
     else:
         print("error")
@@ -167,7 +194,7 @@ def line_main(x,y):
 def line_all(x,y):
     global tmp
     tmp = line_main(x,y)
-    if allink(N,M):
+    if allink(N,M) != False:
             return
     if tmp == False:
         (x1,y1) = line_pre_false(x,y)
@@ -179,8 +206,15 @@ def line_all(x,y):
 
 #全部の線がつながっているか確認（再帰関数の終了条件）        
 def link(s,t):
-    if s<N and t<M:
+    global c
+    if 0<s<N and 0<t<M:
         c=col[s][t]+col[s][t-1]+row[s][t]+row[s-1][t]
+    elif s==0 and t==0:
+        c=col[s][t]+row[s][t]
+    elif s==0:
+        c=col[s][t]+col[s][t-1]+row[s][t]
+    elif t==0:
+        c=col[s][t]+row[s][t]+row[s-1][t]
     elif s==N and t!=M:
         c=col[s][t]+col[s][t-1]+row[s-1][t]
     elif s!=N and t==M:
@@ -194,24 +228,50 @@ def link(s,t):
         return False
 
 
+        
 def allink(s,t):
     for i in range(s):
         for j in range(t):
             if link(i,j)==False:
                 return False
+row[0][0]=1
+
+line_all(1,0)
+
+svg='<?xml version="1.0" encoding="utf-8"?>'
+svg +='''
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'''
+svg +='''
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="1000" height="1000" viewBox="-5 -55 55 60" >
+'''
 
 
-#
-print(col,row)
-print()
-line_all(0,0)
+for a in range(M+1):
+    for b in range(N+1):
+        svg+='<rect x="{0}" y="{1}" width="0.5" height="0.5" fill="black" />'.format(5*a-0.25,-5*b-0.25)
 
+for b in range(N+1):
+    for a in range(M):
+        if col[b][a]==1:
+            svg+='<line x1="{0}" y1="{1}" x2="{2}" y2="{1}" stroke="black" stroke-width="0.2" />'.format(5*a,-5*b,5*(a+1))
+        
+        else :
+            svg+='<line x1="{0}" y1="{1}" x2="{2}" y2="{3}" stroke="black" stroke-width="0.2"  />'.format(5*a+2,-5*b+0.5,5*(a+1)-2,-5*b-0.5)
+            svg+='<line x1="{0}" y1="{1}" x2="{2}" y2="{3}" stroke="black" stroke-width="0.2"  />'.format(5*a+2,-5*b-0.5,5*(a+1)-2,-5*b+0.5)
+for b in range(N):
+    for a in range(M+1):
+        if row[b][a]==1:
+            svg+='<line x1="{0}" y1="{1}" x2="{0}" y2="{2}" stroke="black" stroke-width="0.2" />'.format(5*a,-5*b,-5*(b+1))
+        
+        else :
+            svg+='<line x1="{0}" y1="{1}" x2="{2}" y2="{3}" stroke="black" stroke-width="0.2" />'.format(5*a-0.5,-5*b-2,5*a+0.5,-5*(b+1)+2)
+            svg+='<line x1="{0}" y1="{1}" x2="{2}" y2="{3}" stroke="black" stroke-width="0.2" />'.format(5*a+0.5,-5*b-2,5*a-0.5,-5*(b+1)+2)
 
-def solved(a):
-    if a==None:
-        print(col)
-        print(row)
-    else:
-        print("unsolved")
+svg+='</svg>'
 
-solved(allink(N+1,M+1))
+f=open("graphic_ver2.svg", "w", encoding="UTF-8")
+f.write(svg)
+f.close()
