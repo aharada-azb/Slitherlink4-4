@@ -62,10 +62,10 @@ def judge_zero(tuple):
     s = tuple[0]
     t = tuple[1]
 
-    judge_col[(s,t)] = False
-    judge_col[(s,t+1)] = False
-    judge_row[(s,t)] = False
-    judge_row[(s+1,t)] = False
+    judge_col[(s,t)] +=1
+    judge_col[(s,t+1)] +=1
+    judge_row[(s,t)] +=1
+    judge_row[(s+1,t)] +=1
 
 #すべての0について判定し辺にFalseを代入
 for i in range(len(values)):
