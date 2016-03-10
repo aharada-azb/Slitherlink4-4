@@ -1,7 +1,7 @@
 N=4
 M=4
 
-cols=[[0 for i in range(N)] for j in range(M+1)]
+col=[[0 for i in range(N)] for j in range(M+1)]
 row=[[0 for i in range(N+1)] for j in range(M)]
 svg='<?xml version="1.0" encoding="utf-8"?>'
 svg +='''
@@ -20,7 +20,7 @@ for a in range(M+1):
 
 for b in range(N+1):
     for a in range(M):
-        if cols[b][a]==1:
+        if col[b][a]==1:
             svg+='<line x1="{0}" y1="{1}" x2="{2}" y2="{1}" stroke="black" stroke-width="0.2" />'.format(5*a,-5*b,5*(a+1))
         
         else :
@@ -35,8 +35,21 @@ for b in range(N):
             svg+='<line x1="{0}" y1="{1}" x2="{2}" y2="{3}" stroke="black" stroke-width="0.2" />'.format(5*a-0.5,-5*b-2,5*a+0.5,-5*(b+1)+2)
             svg+='<line x1="{0}" y1="{1}" x2="{2}" y2="{3}" stroke="black" stroke-width="0.2" />'.format(5*a+0.5,-5*b-2,5*a-0.5,-5*(b+1)+2)
 
+for a in range(M):
+    for b in range(N):
+        if col[a][b]+row[a][b]+col[a+1][b]+row[a][b+1]==4:
+            svg+='<text x="{0}" y="{1}" fill="black" font-size="4.5" >４</text>'.format(5*b+1,-5*a-1)
+        elif col[a][b]+row[a][b]+col[a+1][b]+row[a][b+1]==3:
+            svg+='<text x="{0}" y="{1}" fill="black" font-size="4.5" >３</text>'.format(5*b+1,-5*a-1)    
+        elif col[a][b]+row[a][b]+col[a+1][b]+row[a][b+1]==2:
+            svg+='<text x="{0}" y="{1}" fill="black" font-size="4.5" >２</text>'.format(5*b+1,-5*a-1)
+        elif col[a][b]+row[a][b]+col[a+1][b]+row[a][b+1]==1:
+            svg+='<text x="{0}" y="{1}" fill="black" font-size="4.5" >１</text>'.format(5*b+1,-5*a-1)
+        else :
+            svg+='<text x="{0}" y="{1}" fill="black" font-size="4.5" >０</text>'.format(5*b+1,-5*a-1)
+
 svg+='</svg>'
 
-f=open("graphic_ver2.svg", "w", encoding="UTF-8")
+f=open("graphic_ver3.svg", "w", encoding="UTF-8")
 f.write(svg)
 f.close()
